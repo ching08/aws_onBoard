@@ -1,25 +1,25 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
-        "LucyQueue": {
+        "AnnieQueue": {
             "Type": "AWS::SQS::Queue",
             "Properties": {
-                "QueueName": "LucySQS"
+                "QueueName": "AnnieSQS"
             }
         },
-        "LucyQueuePolicy": {
+        "AnnieQueuePolicy": {
             "DependsOn": [
-                "LucyQueue",
-                "LucyEventRule"
+                "AnnieQueue",
+                "AnnieEventRule"
             ],
             "Type": "AWS::SQS::QueuePolicy",
             "Properties": {
                 "PolicyDocument": {
                     "Version": "2012-10-17",
-                    "Id": "LucyQueuePolicy",
+                    "Id": "AnnieQueuePolicy",
                     "Statement": [
                         {
-                            "Sid": "AWS_Lucy_event",
+                            "Sid": "AWS_Annie_event",
                             "Effect": "Allow",
                             "Principal": {
                                 "AWS": "*"
@@ -27,7 +27,7 @@
                             "Action": "sqs:SendMessage",
                             "Resource": {
                                 "Fn::GetAtt": [
-                                    "LucyQueue",
+                                    "AnnieQueue",
                                     "Arn"
                                 ]
                             },
@@ -35,7 +35,7 @@
                                 "ArnEquals": {
                                     "aws:SourceArn": {
                                         "Fn::GetAtt": [
-                                            "LucyEventRule",
+                                            "AnnieEventRule",
                                             "Arn"
                                         ]
                                     }
@@ -46,15 +46,15 @@
                 },
                 "Queues": [
                     {
-                        "Ref": "LucyQueue"
+                        "Ref": "AnnieQueue"
                     }
                 ]
             }
         },
-        "LucyEventRule": {
+        "AnnieEventRule": {
             "Type": "AWS::Events::Rule",
             "Properties": {
-                "Description": "LucyEventRule",
+                "Description": "AnnieEventRule",
                 "EventPattern": {
                     "source": [
                         "aws.s3"
@@ -78,11 +78,11 @@
                     {
                         "Arn": {
                             "Fn::GetAtt": [
-                                "LucyQueue",
+                                "AnnieQueue",
                                 "Arn"
                             ]
                         },
-                        "Id": "lucy_event1",
+                        "Id": "annie_event1",
                     }
                 ]
             }

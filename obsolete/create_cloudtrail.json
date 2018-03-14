@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
-    "LucyTrailBucket": {
+    "AnnieTrailBucket": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "Properties": {}
@@ -10,7 +10,7 @@
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
         "Bucket": {
-          "Ref": "LucyTrailBucket"
+          "Ref": "AnnieTrailBucket"
         },
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -28,7 +28,7 @@
                   [
                     "arn:aws:s3:::",
                     {
-                      "Ref": "LucyTrailBucket"
+                      "Ref": "AnnieTrailBucket"
                     }
                   ]
                 ]
@@ -47,7 +47,7 @@
                   [
                     "arn:aws:s3:::",
                     {
-                      "Ref": "LucyTrailBucket"
+                      "Ref": "AnnieTrailBucket"
                     },
                     "/AWSLogs/",
                     {
@@ -67,14 +67,14 @@
         }
       }
     },
-    "LucyLogGroup": {
+    "AnnieLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "LucyLogs",
+        "LogGroupName": "AnnieLogs",
         "RetentionInDays": 7
       }
     },
-    "LucyLogGroupRole": {
+    "AnnieLogGroupRole": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -98,7 +98,7 @@
                   "Effect": "Allow",
                   "Resource": {
                     "Fn::GetAtt": [
-                      "LucyLogGroup",
+                      "AnnieLogGroup",
                       "Arn"
                     ]
                   },
@@ -109,7 +109,7 @@
                   "Effect": "Allow",
                   "Resource": {
                     "Fn::GetAtt": [
-                      "LucyLogGroup",
+                      "AnnieLogGroup",
                       "Arn"
                     ]
                   },
@@ -118,34 +118,34 @@
               ],
               "Version": "2012-10-17"
             },
-            "PolicyName": "Lucycloudtrail-policy"
+            "PolicyName": "Anniecloudtrail-policy"
           }
         ]
       },
       "Type": "AWS::IAM::Role"
     },
-    "LucyTrail": {
+    "AnnieTrail": {
       "DependsOn": [
         "BucketPolicy"
       ],
       "Type": "AWS::CloudTrail::Trail",
       "Properties": {
-        "TrailName": "LucyTrail",
+        "TrailName": "AnnieTrail",
         "S3BucketName": {
-          "Ref": "LucyTrailBucket"
+          "Ref": "AnnieTrailBucket"
         },
         "IsLogging": true,
         "IncludeGlobalServiceEvents": true,
         "IsMultiRegionTrail": true,
         "CloudWatchLogsLogGroupArn": {
           "Fn::GetAtt": [
-            "LucyLogGroup",
+            "AnnieLogGroup",
             "Arn"
           ]
         },
         "CloudWatchLogsRoleArn": {
           "Fn::GetAtt": [
-            "LucyLogGroupRole",
+            "AnnieLogGroupRole",
             "Arn"
           ]
         },

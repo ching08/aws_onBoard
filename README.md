@@ -1,7 +1,10 @@
-## Lucy cloudformation template to get customer onBoard
+## Annie cloudformation template for auth, and create monitoring on s3 activites
+
+s3 activities --> cloudtrail -> cloudwatch --> SQS
 
 ### create_auth.json
-Purpose : Create roles and policy based on customer's google accountId to allow web identification federation from Lucy
+Purpose : Create roles and policy based on customer's google accountId
+to allow web identification federation from services
 
 
 ### create_monitor.json

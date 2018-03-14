@@ -1,25 +1,25 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
-        "LucyQueue": {
+        "AnnieQueue": {
             "Type": "AWS::SQS::Queue",
             "Properties": {
-                "QueueName": "LucySQS"
+                "QueueName": "AnnieSQS"
             }
         },
-        "LucyQueuePolicy": {
+        "AnnieQueuePolicy": {
             "DependsOn": [
-                "LucyQueue",
-                "LucyEventRule"
+                "AnnieQueue",
+                "AnnieEventRule"
             ],
             "Type": "AWS::SQS::QueuePolicy",
             "Properties": {
                 "PolicyDocument": {
                     "Version": "2012-10-17",
-                    "Id": "LucyQueuePolicy",
+                    "Id": "AnnieQueuePolicy",
                     "Statement": [
                         {
-                            "Sid": "AWS_Lucy_event",
+                            "Sid": "AWS_Annie_event",
                             "Effect": "Allow",
                             "Principal": {
                                 "AWS": "*"
@@ -27,7 +27,7 @@
                             "Action": "sqs:SendMessage",
                             "Resource": {
                                 "Fn::GetAtt": [
-                                    "LucyQueue",
+                                    "AnnieQueue",
                                     "Arn"
                                 ]
                             },
@@ -35,7 +35,7 @@
                                 "ArnEquals": {
                                     "aws:SourceArn": {
                                         "Fn::GetAtt": [
-                                            "LucyEventRule",
+                                            "AnnieEventRule",
                                             "Arn"
                                         ]
                                     }
@@ -46,18 +46,18 @@
                 },
                 "Queues": [
                     {
-                        "Ref": "LucyQueue"
+                        "Ref": "AnnieQueue"
                     }
                 ]
             }
         },
-        "LucyEventRule": {
+        "AnnieEventRule": {
             "DependsOn": [
-                "LucyQueue"
+                "AnnieQueue"
             ],
             "Type": "AWS::Events::Rule",
             "Properties": {
-                "Description": "LucyEventRule",
+                "Description": "AnnieEventRule",
                 "EventPattern": {
                     "source": [
                         "aws.s3"
@@ -81,16 +81,16 @@
                     {
                         "Arn": {
                             "Fn::GetAtt": [
-                                "LucyQueue",
+                                "AnnieQueue",
                                 "Arn"
                             ]
                         },
-                        "Id": "lucy_event1"
+                        "Id": "annie_event1"
                     }
                 ]
             }
         },
-        "LucyTrailBucket": {
+        "AnnieTrailBucket": {
             "DeletionPolicy": "Retain",
             "Type": "AWS::S3::Bucket",
             "Properties": {}
@@ -99,7 +99,7 @@
             "Type": "AWS::S3::BucketPolicy",
             "Properties": {
                 "Bucket": {
-                    "Ref": "LucyTrailBucket"
+                    "Ref": "AnnieTrailBucket"
                 },
                 "PolicyDocument": {
                     "Version": "2012-10-17",
@@ -117,7 +117,7 @@
                                     [
                                         "arn:aws:s3:::",
                                         {
-                                            "Ref": "LucyTrailBucket"
+                                            "Ref": "AnnieTrailBucket"
                                         }
                                     ]
                                 ]
@@ -136,7 +136,7 @@
                                     [
                                         "arn:aws:s3:::",
                                         {
-                                            "Ref": "LucyTrailBucket"
+                                            "Ref": "AnnieTrailBucket"
                                         },
                                         "/AWSLogs/",
                                         {
@@ -156,14 +156,14 @@
                 }
             }
         },
-        "LucyLogGroup": {
+        "AnnieLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-                "LogGroupName": "LucyLogs",
+                "LogGroupName": "AnnieLogs",
                 "RetentionInDays": 7
             }
         },
-        "LucyLogGroupRole": {
+        "AnnieLogGroupRole": {
             "Properties": {
                 "AssumeRolePolicyDocument": {
                     "Statement": [
@@ -187,7 +187,7 @@
                                     "Effect": "Allow",
                                     "Resource": {
                                         "Fn::GetAtt": [
-                                            "LucyLogGroup",
+                                            "AnnieLogGroup",
                                             "Arn"
                                         ]
                                     },
@@ -198,7 +198,7 @@
                                     "Effect": "Allow",
                                     "Resource": {
                                         "Fn::GetAtt": [
-                                            "LucyLogGroup",
+                                            "AnnieLogGroup",
                                             "Arn"
                                         ]
                                     },
@@ -207,35 +207,35 @@
                             ],
                             "Version": "2012-10-17"
                         },
-                        "PolicyName": "Lucycloudtrail-policy"
+                        "PolicyName": "Anniecloudtrail-policy"
                     }
                 ]
             },
             "Type": "AWS::IAM::Role"
         },
-        "LucyTrail": {
+        "AnnieTrail": {
             "DependsOn": [
                 "BucketPolicy",
-                "LucyQueuePolicy"
+                "AnnieQueuePolicy"
             ],
             "Type": "AWS::CloudTrail::Trail",
             "Properties": {
-                "TrailName": "LucyTrail",
+                "TrailName": "AnnieTrail",
                 "S3BucketName": {
-                    "Ref": "LucyTrailBucket"
+                    "Ref": "AnnieTrailBucket"
                 },
                 "IsLogging": true,
                 "IncludeGlobalServiceEvents": true,
                 "IsMultiRegionTrail": true,
                 "CloudWatchLogsLogGroupArn": {
                     "Fn::GetAtt": [
-                        "LucyLogGroup",
+                        "AnnieLogGroup",
                         "Arn"
                     ]
                 },
                 "CloudWatchLogsRoleArn": {
                     "Fn::GetAtt": [
-                        "LucyLogGroupRole",
+                        "AnnieLogGroupRole",
                         "Arn"
                     ]
                 },
